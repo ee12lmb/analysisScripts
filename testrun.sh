@@ -4,33 +4,52 @@ echo
 
 # set up shell variables 
 script=${0##*/}
-mfunc="/nfs/see-fs-01_teaching/ee12lmb/project/source/intial_scripts/jstrain"
 funcpath="/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/Jstrain"
+analysis_dir="/nfs/see-fs-01_teaching/ee12lmb/project/analysis/jstrain"
 
-echo "Running analysis script: $script"
-echo "------------------------------------"
 
 # input checks
-[[ $# -ne 2 ]] && echo "$script: testrun [ texture file ] [ output plot pdf ]" && exit 1
-[[ $2 != *.pdf ]] && echo "$script: output file should be .pdf" && exit 1 
+# -------------------------------------------------------------------------------
+[[ $# -ne 1 ]] && echo "$script: testrun [ texture file ]" && exit 1
 
 infile=$1
-outfile=$2
-outdir=$(echo $2 | rev | cut -d"/" -f2- | rev)
 
 [[ ! -f $infile ]] && echo "$script: input file does not exist, check file path" && exit 1
-[[ -f $outfile ]]  && echo "$script: output file already exists" && exit 1
+# -------------------------------------------------------------------------------
 
-echo "$script: $(date): calling matlab function: jstrain('$infile','$outfile')..."
-echo
+
+# output setup
+# -------------------------------------------------------------------------------
+# create output analysis dir if it doesn't exist
+[[ ! -d $analysis_dir ]] && mkdir $analysis_dir  
+
+# create new run dir inside analysis dir
+rundir=$analysis_dir/$(date "+%y%m%d")_jstrain_$(date "+%H%M").run
+[[ -d $rundir ]] && echo "Run directory already exists... wait a minute!"
+mkdir $rundir
+
+# create ouput pdf name
+outfile="$rundir/output.pdf"
+
+# create log filename
+logfile="$rundir/README.txt"
+#--------------------------------------------------------------------------------
+
+echo "$(date): Running analysis script: $script" | tee $logfile
+echo "---------------------------------------------------------------------" | tee -a $logfile
+
+echo "$script: $(date): calling matlab function: jstrain" | tee -a $logfile
+printf "FUNCTION DIR:\t$funcpath\n" | tee -a $logfile
+printf "INPUT TEXTURE:\t$infile\n" | tee -a $logfile
+
 matlab -nodesktop -nodisplay -nosplash -r "addpath('$funcpath'); jstrain('$infile','$outfile'); exit"
 echo "done"
 
 # crop pdf so plot fills page
-pdfcrop $outfile "$outdir/crop-temp.pdf" > /dev/null
-mv "$outdir/crop-temp.pdf" $outfile
+pdfcrop $outfile "$rundir/temp-crop.pdf" > /dev/null
+mv "$rundir/temp-crop.pdf" $outfile
 
-echo
-echo "$script: $(date): output pdf: $outfile"
+printf "OUTPUT PDF:\t$outfile\n" | tee -a $logfile
+printf "$script: $(date): finished.\n" | tee -a $logfile
 exit 0
   
