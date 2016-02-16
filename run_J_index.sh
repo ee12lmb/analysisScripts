@@ -6,7 +6,7 @@
 
 function usage()
 {
- echo "Usage: run_J_index.sh [ infile ] [ no. grains ] [ seed ] [ output name ]" 
+ echo "Usage: run_J_index.sh [ infile ] [ no. grains ] [ seed ] [ crystal ] [ output name ]" 
  echo "Usage: alternatively, will run interactively if no arguments given"
 }
 
@@ -24,6 +24,8 @@ then
   read n
   printf "Seed:.............. "
   read seed
+  printf "Crystal............ "
+  read crystal
   printf "Output file name:.. "
   read outname
   echo "Running function with user inputs..."
@@ -31,11 +33,12 @@ then
 
 else
 
-  [[ $# -ne 4 ]] && usage && exit 1
+  [[ $# -ne 5 ]] && usage && exit 1
   infile=$1
   n=$2
   seed=$3
-  outname=$4
+  crystal=$4
+  outname=$5
 
 fi
 
@@ -54,6 +57,6 @@ outfile=$outdir/$outname
 #------------------------------------------------------------------------
 # Run matlab function
 
-matlab -nodesktop -nodisplay -nosplash -r "addpath('/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/'); setup_env; j_index('$infile',$n,$seed,'outfile','$outfile'); exit;"
+matlab -nodesktop -nodisplay -nosplash -r "addpath('/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/'); setup_env; j_index('$infile',$n,$seed,'crystal','$crystal','outfile','$outfile'); exit;"
 
 exit 0
