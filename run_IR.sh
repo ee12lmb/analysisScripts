@@ -6,7 +6,7 @@
 
 function usage()
 {
- echo "Usage: run_IR.sh [ infile ] [ step ] [ no. grains ] [ repeat ] [ seed ] [ index ] [ output name ]" 
+ echo "Usage: run_IR.sh [ infile ] [ step ] [ no. grains ] [ repeat ] [ seed ] [ crystal ] [ index ] [ bin size (md only) ] [ output name ]" 
  echo "Usage: alternatively, will run interactively if no arguments given"
 }
 
@@ -28,8 +28,21 @@ then
   read repeat
   printf "Seed:.............. "
   read seed
+  printf "Crystal............ "
+  read crystal
   printf "Index:............. "
   read index
+
+  # if we're running m_indexDisc, need to know bin size
+  case $index in
+     md|MD) printf "Bin size (deg)..... "
+             read bin
+             needBin=1 # we do have bin size
+             ;;
+          *) needBin=0 # we don't need bin size
+             ;;
+  esac
+
   printf "Output file name:.. "
   read outname
   echo "Running function with user inputs..."
@@ -37,14 +50,34 @@ then
 
 else
 
-  [[ $# -ne 4 ]] && usage && exit 1
-  infile=$1
-  step=$2
-  n=$3
-  repeat=$4
-  seed=$5
-  index=$6
-  outname=$7
+  # check if discrete m index (so we need bin size)
+  case $7 in
+     md|MD)  [[ $# -ne 9 ]] && usage && exit 1
+             infile=$1
+             step=$2
+             n=$3
+             repeat=$4
+             seed=$5
+             crystal=$6
+             index=$7
+             bin=$8
+             outname=$9
+             needBin=1 # we do need bin 
+             ;;
+
+  # index must be either j or m cont.
+          *) [[ $# -ne 8 ]] && usage && exit 1
+             infile=$1
+             step=$2
+             n=$3
+             repeat=$4
+             seed=$5
+             crystal=$6
+             index=$7
+             outname=$8
+             needBin=0 # we dont need bin
+             ;;
+  esac
 
 fi
 
@@ -63,6 +96,13 @@ outfile=$outdir/$outname
 #------------------------------------------------------------------------
 # Run matlab function
 
-matlab -nodesktop -nodisplay -nosplash -r "addpath('/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/'); setup_env; index_repeat('$infile',$step,$n,$repeat,$seed,'index','$index','outfile','$outfile'); exit;"
+if [[ $needBin -eq 0 ]]
+then
+  matlab -nodesktop -nodisplay -nosplash -r "addpath('/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/'); setup_env; index_repeat('$infile',$step,$n,$repeat,$seed,'crystal','$crystal','index','$index','outfile','$outfile'); exit;"
+
+elif [[ $needBin -eq 1 ]]
+then 
+  matlab -nodesktop -nodisplay -nosplash -r "addpath('/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/'); setup_env; index_repeat('$infile',$step,$n,$repeat,$seed,'crystal','$crystal','index','$index','bin',$bin,'outfile','$outfile'); exit;"
+fi
 
 exit 0
