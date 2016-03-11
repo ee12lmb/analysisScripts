@@ -6,7 +6,7 @@
 
 function usage()
 {
- echo "Usage: run_IR.sh [ infile ] [ step ] [ no. grains ] [ repeat ] [ seed ] [ crystal ] [ index ] [ bin size (md only) ] [ output name ]" 
+ echo "Usage: run_IR.sh [ infile ] [ step ] [ no. grains ] [ repeat ] [ seed ] [ crystal ] [ index ] [ bin size (md only) ] [ binning type (md only) [ output name ]" 
  echo "Usage: alternatively, will run interactively if no arguments given"
 }
 
@@ -36,7 +36,10 @@ then
   # if we're running m_indexDisc, need to know bin size
   case $index in
      md|MD) printf "Bin size (deg)..... "
-             read bin
+            read bin
+            printf "Binning type....... "
+            read binning
+            
              needBin=1 # we do have bin size
              ;;
           *) needBin=0 # we don't need bin size
@@ -52,7 +55,7 @@ else
 
   # check if discrete m index (so we need bin size)
   case $7 in
-     md|MD)  [[ $# -ne 9 ]] && usage && exit 1
+     md|MD)  [[ $# -ne 10 ]] && usage && exit 1
              infile=$1
              step=$2
              n=$3
@@ -61,7 +64,8 @@ else
              crystal=$6
              index=$7
              bin=$8
-             outname=$9
+             binning=$9
+             outname=${10}
              needBin=1 # we do need bin 
              ;;
 
@@ -87,6 +91,8 @@ fi
 outdir="/nfs/see-fs-01_teaching/ee12lmb/project/analysis/outputs/IR"
 devdir="/nfs/see-fs-01_teaching/ee12lmb/project/source/dev"
 outfile=$outdir/$outname
+#echo "OUTNAME: $outname"
+#echo "OUTPATH: $outfile"
 
 #------------------------------------------------------------------------
 # input checks
@@ -102,7 +108,7 @@ then
 
 elif [[ $needBin -eq 1 ]]
 then 
-  matlab -nodesktop -nodisplay -nosplash -r "addpath('/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/'); setup_env; index_repeat('$infile',$step,$n,$repeat,$seed,'crystal','$crystal','index','$index','bin',$bin,'outfile','$outfile'); exit;"
+  matlab -nodesktop -nodisplay -nosplash -r "addpath('/nfs/see-fs-01_teaching/ee12lmb/project/source/dev/'); setup_env; index_repeat('$infile',$step,$n,$repeat,$seed,'crystal','$crystal','index','$index','bin',$bin,'binning','$binning','outfile','$outfile'); exit;"
 fi
 
 exit 0
