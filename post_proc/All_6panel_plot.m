@@ -89,7 +89,6 @@ for i = 1:length(indices)
 end
 PPS_AXC(:,1) = extract(:,1); % exctract strain for this panel
 
-indices = {'j','mc'};
 % pps simple shear
 for i = 1:length(indices) 
     fname   = sprintf('PPS_SPS_%s_n5000_strAll_sd1.out',indices{i}); 
@@ -155,7 +154,7 @@ set(MC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFa
 set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
 
 legh = legend([J,MC,MD],{'J-index (olivine)','Cont. M-index (olivine)','Disc. M-index (olivine)'},'location','south');
-lpos = get(legh,'pos')
+lpos = get(legh,'pos');
 set(legh,'Orientation','horizontal','Box','off','Position',[(lpos(1)+lshift(1)) ...
                                                            (lpos(2)+lshift(2)) ...
                                                             lpos(3) ...
@@ -234,7 +233,7 @@ set(MC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFa
 set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
 
 legh = legend([J,MC,MD],{'J-index (quartz)','Cont. M-index (quartz)','Disc. M-index (quartz)'},'location','south');
-lpos = get(legh,'pos')
+lpos = get(legh,'pos');
 set(legh,'Orientation','horizontal','Box','off','Position',[(lpos(1)+lshift(1)) ...
                                                            (lpos(2)+lshift(2)) ...
                                                             lpos(3) ...
@@ -317,7 +316,7 @@ lshift(1) = 0.27;
 lshift(2) = -0.16;
 
 legh = legend([J,MC,MD],{'J-index (P-PS)','Cont. M-index (P-PS)','Disc. M-index (P-PS)'},'location','south');
-lpos = get(legh,'pos')
+lpos = get(legh,'pos');
 set(legh,'Orientation','horizontal','Box','off','Position',[(lpos(1)+lshift(1)) ...
                                                            (lpos(2)+lshift(2)) ...
                                                             lpos(3) ...
@@ -333,7 +332,7 @@ hold on
 JY_AXC_Lim = [1 4];   % limit of J y-axis for axial compression
 MY_AXC_Lim = [0 0.2]; % limif of M y-axis for axial compression
 JY_SPS_Lim = [1 90];  % limit of J y-axis for axial compression
-MY_SPS_Lim = [0 0.9]; % limif of M y-axis for axial compression
+MY_SPS_Lim = [0 1]; % limif of M y-axis for axial compression
 
 
 % plot j and mc using plotyy to get both axes
@@ -342,7 +341,7 @@ MY_SPS_Lim = [0 0.9]; % limif of M y-axis for axial compression
 % add MD to correct axes
 set(fig(1),'CurrentAxes',AX(2))
 hold on
-%MD = plot(PPS_SPS(:,1),PPS_SPS(:,4));
+MD = plot(PPS_SPS(:,1),PPS_SPS(:,4));
 
 % labels for this subplot
 ylabel(AX(2),'M-index','FontWeight',w,'FontSize',tsize)
@@ -357,7 +356,7 @@ xmax = PPS_SPS(length(PPS_SPS),1);
 set(AX,'Pos',pos,'YColor','k','FontSize',tsize - 2,'FontWeight',w,...
     'XLim',[xmin xmax])
 set(AX(1),'YLim',JY_SPS_Lim,'YTick',[1 30 60 90],'Box','off') % set const limits
-set(AX(2),'YLim',MY_SPS_Lim,'YTick',[0 0.2 0.6 0.9]) % set const limits
+set(AX(2),'YLim',MY_SPS_Lim,'YTick',[0 0.5 1]) % set const limits
 
 % set y limits
 % ymax(1) = max(QTZ_SPS(:,2));
@@ -371,7 +370,7 @@ set(AX(2),'YLim',MY_SPS_Lim,'YTick',[0 0.2 0.6 0.9]) % set const limits
 %c = [0.3 0.3 0.3]; % color for olivine
 set(J,'LineStyle','-','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
 set(MC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
-%set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
                                                         
                                                         
 %======================================================================
@@ -380,4 +379,116 @@ set(fig(1),'PaperType','a4','Units','centimeters','Position',[0 0 20.9 40.2],'Pa
 print('~/project/doc/final/figs/ALL_6panel_plot.pdf','-painters','-dpdf','-r800')
 
 
+%% Second plot - Zoom on QTZ strain 
+%======================================================================
+
+clear QTZ_SPS
+% quartz simple shear
+for i = 1:length(indices) 
+    fname   = sprintf('QTZ_SPS_%s_n5000_strAll_sd1_FULL.out',indices{i}); 
+    extract = read_texout(fname);
+    
+    QTZ_SPS(:,i+1) = extract(:,2);   
+end
+QTZ_SPS(:,1) = extract(:,1); % exctract strain for this panel
+
+
+fig = figure('Name','Quartz zoom')
+
+% change of axis limits for new plot 
+JY_AXC_Lim = [1 2];   % limit of J y-axis for axial compression
+MY_AXC_Lim = [0 0.08]; % limif of M y-axis for axial compression
+JY_SPS_Lim = [1 2];  % limit of J y-axis for axial compression
+MY_SPS_Lim = [0 0.08]; % limif of M y-axis for axial compression
+
+% -------------------------- QTZ AXC --------------------------------
+AX  = subplot(1,2,1);
+pos = get(AX,'pos');     % get the current axes position
+hold on
+
+% plot j and mc using plotyy to get both axes
+[AX,J,MC] = plotyy(QTZ_AXC(:,1),QTZ_AXC(:,2),QTZ_AXC(:,1),QTZ_AXC(:,3),'plot');
+
+% add MD to correct axes
+set(fig(1),'CurrentAxes',AX(2))
+hold on
+MD = plot(QTZ_AXC(:,1),QTZ_AXC(:,4));
+
+% labels for this subplot
+%title({'Axial compression';''},'FontWeight',w,'FontSize',tsize)
+ylabel(AX(1),'J-index','FontWeight',w,'FontSize',tsize)
+xlabel(AX(1),'Strain','FontWeight',w,'FontSize',tsize)
+text(0.03,0.95*MY_AXC_Lim(2),'a)         Axial compression','FontWeight',w,'FontSize',tsize)
+
+% format axes
+xmin = QTZ_AXC(1,1);
+xmax = QTZ_AXC(length(QTZ_AXC),1);
+set(AX,'Pos',pos,'YColor','k','FontSize',tsize - 2,'FontWeight',w,...
+    'XLim',[xmin xmax]) 
+set(AX(1),'YLim',JY_AXC_Lim,'Box','off','YTick',[1 1.5 2]) % set const limits
+set(AX(2),'YLim',MY_AXC_Lim,'YTick',[0 0.04 0.08]) % set const limits
+
+% format lines
+c = [0.3 0.3 0.3]; % color for olivine
+set(J,'LineStyle','-','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(MC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+
+lshift(1) = 0.27;
+lshift(2) = 0.79;
+
+legh = legend([J,MC,MD],{'J-index (quartz)','Cont. M-index (quartz)','Disc. M-index (quartz)'},'location','south');
+lpos = get(legh,'pos');
+set(legh,'Orientation','horizontal','Box','off','Position',[(lpos(1)+lshift(1)) ...
+                                                           (lpos(2)+lshift(2)) ...
+                                                            lpos(3) ...
+                                                            lpos(4)])
+
+
+% -------------------------- QTZ SPS --------------------------------
+AX  = subplot(1,2,2);
+pos = get(AX,'pos');     % get the current axes position
+hold on
+
+% plot j and mc using plotyy to get both axes
+[AX,J,MC] = plotyy(QTZ_SPS(:,1),QTZ_SPS(:,2),QTZ_SPS(:,1),QTZ_SPS(:,3),'plot');
+
+% add MD to correct axes
+set(fig(1),'CurrentAxes',AX(2))
+hold on
+MD = plot(QTZ_SPS(:,1),QTZ_SPS(:,4));
+
+% labels for this subplot
+%title({'Simple shear';''},'FontWeight',w,'FontSize',tsize)
+ylabel(AX(2),'M-index','FontWeight',w,'FontSize',tsize)
+xlabel(AX(1),'Strain','FontWeight',w,'FontSize',tsize)
+text(0.045,0.95*MY_SPS_Lim(2),'b)             Simple shear','FontWeight',w,'FontSize',tsize)
+
+% format axes
+xmin = QTZ_SPS(1,1);
+xmax = 0.5;
+set(AX,'Pos',pos,'YColor','k','FontSize',tsize - 2,'FontWeight',w,...
+    'XLim',[xmin xmax])
+set(AX(1),'YLim',JY_SPS_Lim,'YTick',[1 1.5 2],'Box','off') % set const limits
+set(AX(2),'YLim',MY_SPS_Lim,'YTick',[0 0.04 0.08]) % set const limits
+
+
+% set y limits
+% ymax(1) = max(QTZ_SPS(:,2));
+% ymax(1) = ymax(1) + 0.05*ymax(1);
+% ymax(2) = max(QTZ_SPS(:,3));
+% ymax(2) = ymax(2) + 0.05*ymax(2);
+% set(AX(1),'YLim',[0 ymax(1)]);
+% set(AX(2),'YLim',[0 ymax(2)]);
+
+% format lines
+c = [0.3 0.3 0.3]; % color for olivine
+set(J,'LineStyle','-','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(MC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+
+%======================================================================
+% print to pdf file
+set(fig(1),'PaperType','a4','Units','centimeters','Position',[0 20 22.9 8.6],'PaperPositionMode','auto')
+print('~/project/doc/final/figs/QTZ_Strain_Zoom.pdf','-painters','-dpdf','-r800')
 
