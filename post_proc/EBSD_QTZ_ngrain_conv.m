@@ -33,7 +33,7 @@ addpath('/nfs/see-fs-01_teaching/ee12lmb/project/analysis/outputs/IR/MD_conv_EBS
 grains = [5;10;50;100;200;500;1000;2000;5000];
 steps  = [1;4;7;9];
 strain = [0.02;0.16;0.3;0.42];
-
+sample = {'P12/055','P13/065','P12/027','P12/070A'};
 
 % J index data
 for i = 1:length(steps)
@@ -46,8 +46,8 @@ for i = 1:length(steps)
         fname = sprintf('EBSD_QTZ_mc_n%d_r50_STR_%d_sd1.out',grains(j),steps(i))
         mc_raw(:,j,i) = read_texout(fname); 
         
-%         fname = sprintf('EBSD_QTZ_md_n%d_r50_STR_%d_sd1.out',grains(j),steps(i))
-%         md_raw(:,j,i) = read_texout(fname); 
+        fname = sprintf('EBSD_QTZ_md_n%d_r50_STR_%d_sd1.out',grains(j),steps(i))
+        md_raw(:,j,i) = read_texout(fname); 
 
     end
     
@@ -79,8 +79,8 @@ for i = 1:length(steps)
         mc_av(j,i)  = mean(mc_raw(:,j,i))
         mc_std(j,i) = std(mc_raw(:,j,i));
         
-%         md_av(j,i)  = mean(md_raw(:,j,i))
-%         md_std(j,i) = std(md_raw(:,j,i));
+        md_av(j,i)  = mean(md_raw(:,j,i))
+        md_std(j,i) = std(md_raw(:,j,i));
         
     end
 end
@@ -97,6 +97,8 @@ itemx   = 5;      % subplot label x position (e.g. a) in top left)
 itemy   = 0.06;   % scaling to how far up the y axes labels should be
 w       = 'bold'; % font weight
 lw      = 'bold';   % weight of subplot letters
+JY_Lim  = [0 40]; 
+MY_Lim  = [0 0.4];
 %--------------------------------------------------------------------
 
 
@@ -111,7 +113,7 @@ for i = 1:length(steps)
     
     set(fig(1),'CurrentAxes',AX(2))
     hold on
-    %H3 = plot(grains,md_av(:,i));
+    H3 = plot(grains,md_av(:,i));
     
     ymax = AX(2).YLim;     % get y axis limits
     ymax = ymax(2);        % set ymax
@@ -127,11 +129,11 @@ for i = 1:length(steps)
         
         text(itemx,itemy*ymax,'b)','FontSize',labsize','FontWeight',lw);
         
-%         % legend in top right
-%         leg = legend([H1 H2 H3],{'J-index','M-index (cont.)','M-index (disc.)'},'Location','northeast');
-%         leg.FontSize = labsize;
-%         leg.FontWeight = w;
-%         leg.Box = 'off';
+        % legend in top right
+        leg = legend([H1 H2 H3],{'J-index','M-index (cont.)','M-index (disc.)'},'Location','northeast');
+        leg.FontSize = labsize;
+        leg.FontWeight = w;
+        leg.Box = 'off';
         
         ylabel(AX(2),'M-index','FontWeight',w,'FontSize',labsize)
         
@@ -159,15 +161,17 @@ for i = 1:length(steps)
     set(fig(1),'CurrentAxes',AX(2))
     hold on
     errorbar(grains,mc_av(:,i),mc_std(:,i),'Color','k','LineStyle','none')
-    %errorbar(grains,md_av(:,i),md_std(:,i),'Color','k','LineStyle','none')
+    errorbar(grains,md_av(:,i),md_std(:,i),'Color','k','LineStyle','none')
    
     % format lines and axes
+    set(AX(1),'YLim',JY_Lim,'YTick',[0 20 40])
+    set(AX(2),'YLim',MY_Lim,'YTick',[0 0.2 0.4])
     set(AX,'xscale','log','Pos',P,'YColor','k','FontSize',labsize - 2,'FontWeight',w)
     set(H1,'LineStyle','-','LineWidth',lwidth,'Marker','o','MarkerSize',msize,'Color','k','MarkerFaceColor','k')
     set(H2,'LineStyle',':','LineWidth',lwidth,'Marker','o','MarkerSize',msize,'Color','k','MarkerFaceColor','k')
-    %set(H3,'LineStyle','--','LineWidth',lwidth,'Marker','o','MarkerSize',msize,'Color','k','MarkerFaceColor','k')
+    set(H3,'LineStyle','--','LineWidth',lwidth,'Marker','o','MarkerSize',msize,'Color','k','MarkerFaceColor','k')
     
-    title_str = sprintf('Strain = %i%%',strain(i)*100);
+    title_str = sprintf('Pole figure %i [%s]',steps(i),sample{i});
     title(title_str,'FontSize',labsize,'FontWeight',w)
     
     % print to pdf file
@@ -175,7 +179,7 @@ for i = 1:length(steps)
                'PaperPositionMode', 'manual',...
                'PaperUnits','centimeters',...
                'Paperposition',[1 1 28.7 20])
-    %print('~/project/doc/final/figs/OLV_AXC_Conv_INTERP.pdf','-painters','-dpdf','-r800')
+    print('~/project/doc/final/figs/EBSD_QTZ_n_Conv.pdf','-painters','-dpdf','-r800')
 
     
 end
@@ -235,12 +239,13 @@ for i = 1:length(steps)
     end
       
     % format lines 
+    set(AX(1),'YLim',[0 4],'YTick',[0 2 4])
     set(AX,'xscale','log','Pos',P,'YColor','k','FontSize',labsize - 2,'FontWeight',w)
     set(H1,'LineStyle','-','LineWidth',lwidth,'Marker','o','MarkerSize',msize,'Color','k','MarkerFaceColor','k')
     set(H2,'LineStyle',':','LineWidth',lwidth,'Marker','o','MarkerSize',msize,'Color','k','MarkerFaceColor','k')
     set(H3,'LineStyle','--','LineWidth',lwidth,'Marker','o','MarkerSize',msize,'Color','k','MarkerFaceColor','k')
     
-    title_str = sprintf('Strain = %i%%',strain(i)*100);
+    title_str = sprintf('Pole figure %i [%s]',steps(i),sample{i});
     title(title_str,'FontSize',labsize,'FontWeight',w)
         
     % print to pdf file
@@ -248,6 +253,6 @@ for i = 1:length(steps)
                'PaperPositionMode', 'manual',...
                'PaperUnits','centimeters',...
                'Paperposition',[1 1 28.7 20])
-    %print('~/project/doc/final/figs/OLV_AXC_std_conv_INTERP.pdf','-painters','-dpdf','-r800')
+    print('~/project/doc/final/figs/EBSD_QTZ_std_conv.pdf','-painters','-dpdf','-r800')
     
 end
