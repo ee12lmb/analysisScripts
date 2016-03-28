@@ -25,10 +25,10 @@ OLV_AXC="/nfs/see-fs-01_teaching/ee12lmb/project/data/olivine_axial_compress_VPS
 OLV_SPS="/nfs/see-fs-01_teaching/ee12lmb/project/data/olivine_simple_shear_VPSC_big/TEX_PH1.OUT"
 
 QTZ_AXC="/nfs/see-fs-01_teaching/ee12lmb/project/data/quartz_axial_compress_VPSC_big/TEX_PH1.OUT"
-QTZ_SPS="/nfs/see-fs-01_teaching/ee12lmb/project/data/quartz_simple_shear_VPSC_big/TEX_PH1.OUT"
+QTZ_SPS="/nfs/see-fs-01_teaching/ee12lmb/project/data/quartz_simple_shear_VPSC_big/TEX_PH1_EXTR_1-4-100.OUT"
 
-#PPS_AXC=
-#PPS_SPS=
+PPS_AXC="/nfs/see-fs-01_teaching/ee12lmb/project/data/post_perovskite_axial_compress_VPSC_big/TEX_PH1.OUT"
+PPS_SPS="/nfs/see-fs-01_teaching/ee12lmb/project/data/post_perovskite_simple_shear_VPSC_big/TEX_PH1_EXTR_1-4-100.OUT"
 
 # creat output directory name (will be in each separte method's output file)
 outdir="all_6panel_plot.out"
@@ -44,32 +44,37 @@ binning="interp"   # binning type (md)
 
 # RUN FUNCTIONS
 #===========================================================================
-
+#: <<'COMMENT'
 #====================================OLIVINE================================
 crystal="olivine"
 
 # -----------------------------------J_INDEX--------------------------------
 # axial compression
-#run="
-echo "nohup $j_index $OLV_AXC $n $seed $crystal $outdir/OLV_AXC_j_n${n}_strAll_sd${seed}.out >& /dev/null"
-#eval "${run}" &
+run="nohup $j_index $OLV_AXC $n $seed $crystal $outdir/OLV_AXC_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear 
-echo "nohup $j_index $OLV_SPS $n $seed $crystal $outdir/OLV_SPS_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $j_index $OLV_SPS $n $seed $crystal $outdir/OLV_SPS_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # -----------------------------------M_CONT--------------------------------
 # axial compression
-echo "nohup $m_cont $OLV_AXC $n $seed $crystal $outdir/OLV_AXC_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_cont $OLV_AXC $n $seed $crystal $outdir/OLV_AXC_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $m_cont $OLV_SPS $n $seed $crystal $outdir/OLV_SPS_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_cont $OLV_SPS $n $seed $crystal $outdir/OLV_SPS_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
+
 
 # -----------------------------------M_DISC--------------------------------
 # axial compression
-echo "nohup $m_disc $OLV_AXC $n $seed $crystal $bin $binning $outdir/OLV_AXC_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_disc $OLV_AXC $n $seed $crystal $bin $binning $outdir/OLV_AXC_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $m_disc $OLV_SPS $n $seed $crystal $bin $binning $outdir/OLV_SPS_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_disc $OLV_SPS $n $seed $crystal $bin $binning $outdir/OLV_SPS_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 #: <<'COMMENT'
 #====================================QUARTZ================================
@@ -77,53 +82,64 @@ crystal="quartz"
 
 # -----------------------------------J_INDEX--------------------------------
 # axial compression
-#run="
-echo "nohup $j_index $QTZ_AXC $n $seed $crystal $outdir/QTZ_AXC_j_n${n}_strAll_sd${seed}.out >& /dev/null"
-#eval "${run}" &
+run="nohup $j_index $QTZ_AXC $n $seed $crystal $outdir/QTZ_AXC_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $j_index $QTZ_SPS $n $seed $crystal $outdir/QTZ_SPS_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $j_index $QTZ_SPS $n $seed $crystal $outdir/QTZ_SPS_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # -----------------------------------M_CONT--------------------------------
 # axial compression
-echo "nohup $m_cont $QTZ_AXC $n $seed $crystal $outdir/QTZ_AXC_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_cont $QTZ_AXC $n $seed $crystal $outdir/QTZ_AXC_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $m_cont $QTZ_SPS $n $seed $crystal $outdir/QTZ_SPS_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_cont $QTZ_SPS $n $seed $crystal $outdir/QTZ_SPS_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # -----------------------------------M_DISC--------------------------------
 # axial compression
-echo "nohup $m_disc $QTZ_AXC $n $seed $crystal $bin $binning $outdir/QTZ_AXC_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_disc $QTZ_AXC $n $seed $crystal $bin $binning $outdir/QTZ_AXC_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $m_disc $QTZ_SPS $n $seed $crystal $bin $binning $outdir/QTZ_SPS_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+#run="nohup $m_disc $QTZ_SPS $n $seed $crystal $bin $binning $outdir/QTZ_SPS_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+#eval "${run}" &
+
+# simple shear EXTRACTED DATA SET
+QTZ_SPS_EXTR="/nfs/see-fs-01_teaching/ee12lmb/project/data/quartz_simple_shear_VPSC_big/TEX_PH1_EXTR_1-4-100.OUT"
+run="nohup $m_disc ${QTZ_SPS_EXTR} $n $seed $crystal $bin $binning $outdir/QTZ_SPS_md_n${n}_strAll_sd${seed}_EXTR.out >& /dev/null"
+eval "${run}" &
 
 #================================POST-PEROVSKITE============================
 crystal="post-perovskite"
 
 # -----------------------------------J_INDEX--------------------------------
 # axial compression
-#run="
-echo "nohup $j_index $PPS_AXC $n $seed $crystal $outdir/PPS_AXC_j_n${n}_strAll_sd${seed}.out >& /dev/null"
-#eval "${run}" &
+run="nohup $j_index $PPS_AXC $n $seed $crystal $outdir/PPS_AXC_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $j_index $PPS_SPS $n $seed $crystal $outdir/PPS_SPS_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $j_index $PPS_SPS $n $seed $crystal $outdir/PPS_SPS_j_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # -----------------------------------M_CONT--------------------------------
 # axial compression
-echo "nohup $m_cont $PPS_AXC $n $seed $crystal $outdir/PPS_AXC_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_cont $PPS_AXC $n $seed $crystal $outdir/PPS_AXC_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $m_cont $PPS_SPS $n $seed $crystal $outdir/PPS_SPS_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_cont $PPS_SPS $n $seed $crystal $outdir/PPS_SPS_mc_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # -----------------------------------M_DISC--------------------------------
 # axial compression
-echo "nohup $m_disc $PPS_AXC $n $seed $crystal $bin $binning $outdir/PPS_AXC_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_disc $PPS_AXC $n $seed $crystal $bin $binning $outdir/PPS_AXC_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
 # simple shear
-echo "nohup $m_disc $PPS_SPS $n $seed $crystal $bin $binning $outdir/PPS_SPS_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+run="nohup $m_disc $PPS_SPS $n $seed $crystal $bin $binning $outdir/PPS_SPS_md_n${n}_strAll_sd${seed}.out >& /dev/null"
+eval "${run}" &
 
-#COMMENT
-
-
+exit 0 
