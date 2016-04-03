@@ -100,7 +100,7 @@ PPS_SPS(:,1) = extract(:,1); % exctract strain for this panel
 
 
 %======================================================================
-%% Create plot
+%% Create plots
 
 % set figure constants
 %--------------------------------------------------------------------
@@ -118,6 +118,7 @@ MY_SPS_Lim = [0 0.52]; % limif of M y-axis for axial compression
  lshift(2) = -0.14;
 
 %--------------------------------------------------------------------
+%% Big plot
 
 fig = figure('Name','Indices vs. strain');
 
@@ -376,10 +377,105 @@ set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerF
 %======================================================================
 % print to pdf file
 set(fig(1),'PaperType','a4','Units','centimeters','Position',[0 0 20.9 40.2],'PaperPositionMode','auto')
-print('~/project/doc/final/figs/ALL_6panel_plot.pdf','-painters','-dpdf','-r800')
+%print('~/project/doc/final/figs/ALL_6panel_plot.pdf','-painters','-dpdf','-r800')
 
 
-%% Second plot - Zoom on QTZ strain 
+%% Second plot 
+
+% J against M
+
+lshift(1) = 0.25;
+lshift(2) = 0.3;
+
+fig = figure('Name','J vs M');
+
+% -------------------Olivine AXC ---------------------
+AX = subplot(2,2,1);
+hold on
+
+JMC = plot(OLV_AXC(:,2),OLV_AXC(:,3));
+JMD = plot(OLV_AXC(:,2),OLV_AXC(:,4));
+
+c = [0.2 0.6 0.2]; % color for olivine
+set(JMC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(JMD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+
+title('Axial compression','FontWeight',w,'FontSize',tsize)
+ylabel('M-index','FontWeight',w,'FontSize',tsize)
+
+set(AX,'FontSize',tsize - 2,'FontWeight',w)
+
+legh = legend([JMC, JMD],{'Continuous M-index (olivine)','Discrete M-index (olivine)'});
+set(legh,'Orientation','horizontal','Box','off','Position',[(lpos(1)+lshift(1)) ...
+                                                           (lpos(2)+lshift(2)) ...
+                                                            lpos(3) ...
+                                                            lpos(4)])
+
+
+% ------------------- Olivine SPS
+AX = subplot(2,2,2);
+hold on
+
+JMC = plot(OLV_SPS(:,2),OLV_SPS(:,3));
+JMD = plot(OLV_SPS(:,2),OLV_SPS(:,4));
+
+c = [0.2 0.6 0.2]; % color for olivine
+set(JMC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(JMD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+
+title('Simple shear','FontWeight',w,'FontSize',tsize)
+
+set(AX,'FontSize',tsize - 2,'FontWeight',w)
+
+
+% Quartz subplot
+AX = subplot(2,2,3);
+hold on
+
+JMC = plot(QTZ_AXC(:,2),QTZ_AXC(:,3));
+JMD = plot(QTZ_AXC(:,2),QTZ_AXC(:,4));
+
+c = [0.3 0.3 0.3]; % color for olivine
+set(JMC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(JMD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+
+xlabel('J-index','FontWeight',w,'FontSize',tsize)
+ylabel('M-index','FontWeight',w,'FontSize',tsize)
+
+set(AX,'FontSize',tsize - 2,'FontWeight',w)
+
+lshift(1) = 0.24;
+lshift(2) = -0.18;
+
+legh = legend([JMC, JMD],{'Continuous M-index (quartz)','Discrete M-index (quartz)'});
+set(legh,'Orientation','horizontal','Box','off','Position',[(lpos(1)+lshift(1)) ...
+                                                           (lpos(2)+lshift(2)) ...
+                                                            lpos(3) ...
+                                                            lpos(4)])
+
+
+set(fig,'PaperType','a4','Units','centimeters','Position',[0 20 22.9 8.6],'PaperPositionMode','auto')
+
+% Quartz subplot
+AX = subplot(2,2,4);
+hold on
+
+JMC = plot(QTZ_SPS(:,2),QTZ_SPS(:,3));
+JMD = plot(QTZ_SPS(:,2),QTZ_SPS(:,4));
+
+c = [0.3 0.3 0.3]; % color for olivine
+set(JMC,'LineStyle',':','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+set(JMD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerFaceColor',c)
+
+xlabel('J-index','FontWeight',w,'FontSize',tsize)
+
+set(AX,'FontSize',tsize - 2,'FontWeight',w)
+
+set(fig,'PaperType','a4','Units','centimeters','Position',[0 20 22.9 19.6],'PaperPositionMode','auto')
+print('~/project/doc/final/figs/m_vs_j.pdf','-painters','-dpdf','-r800')
+
+return
+%% Third plot - Zoom on QTZ strain 
 %======================================================================
 
 clear QTZ_SPS
@@ -393,7 +489,7 @@ end
 QTZ_SPS(:,1) = extract(:,1); % exctract strain for this panel
 
 
-fig = figure('Name','Quartz zoom')
+fig = figure('Name','Quartz zoom');
 
 % change of axis limits for new plot 
 JY_AXC_Lim = [1 2];   % limit of J y-axis for axial compression
@@ -490,5 +586,5 @@ set(MD,'LineStyle','--','LineWidth',lwidth,'MarkerSize',msize,'Color',c,'MarkerF
 %======================================================================
 % print to pdf file
 set(fig(1),'PaperType','a4','Units','centimeters','Position',[0 20 22.9 8.6],'PaperPositionMode','auto')
-print('~/project/doc/final/figs/QTZ_Strain_Zoom.pdf','-painters','-dpdf','-r800')
+%print('~/project/doc/final/figs/QTZ_Strain_Zoom.pdf','-painters','-dpdf','-r800')
 
